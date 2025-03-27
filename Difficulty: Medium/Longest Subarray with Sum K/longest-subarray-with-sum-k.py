@@ -2,7 +2,7 @@
 
 class Solution:
     def longestSubarray(self, arr, k):  
-        # code here
+       # code here
         prefixSum = 0
         diff = 0
         maxSubArrayLength = 0
@@ -21,6 +21,23 @@ class Solution:
             # maxSubArrayLength = max(subArrayLength , maxSubArrayLength)
         
         return maxSubArrayLength
+        
+        ## The below can be used with only positive array
+        
+        # i=0
+        # j=0
+        # sum = arr[0]
+        # subArrayLength = 0
+        # while j<len(arr) and i<len(arr) :
+        #     while sum > k and i<=j :
+        #         sum = sum - arr[i]
+        #         i+=1
+        #     if sum == k :
+        #         subArrayLength = max(subArrayLength , j-i+1)
+        #     j+=1
+        #     if sum < k : 
+        #         sum += arr[j]
+            
     
 
 
