@@ -6,14 +6,15 @@ class Solution:
         # code here
         flag = True
         
-        while flag:
+        while flag :
             flag = False
             for i in range (1,len(arr)) :
                 if arr[i-1] > arr[i] :
                     flag = True
-                    [arr[i-1] , arr[i]] = [arr[i] , arr[i-1]]
-        
+                    [arr[i] , arr[i-1]] = [arr[i-1] , arr[i]]
+            
         return arr
+
 
 #{ 
  # Driver Code Starts
