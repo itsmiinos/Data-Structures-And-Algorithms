@@ -1,11 +1,11 @@
-class Solution(object):
-    def twoSum(self, nums, target):
-        sumMap = {}
-        diff = 0
-        for i in range(len(nums)) :
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        my_dict = {} #val : index
+
+        for i in range (0,len(nums)):
             diff = target - nums[i]
-            if diff in sumMap :
-                return [i,sumMap[diff]]
+
+            if diff in my_dict :
+                return [i , my_dict[diff]]
             else :
-                sumMap[nums[i]] = i
-        return -1
+                my_dict[nums[i]] = i
