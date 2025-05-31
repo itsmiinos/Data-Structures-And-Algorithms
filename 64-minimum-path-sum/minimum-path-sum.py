@@ -1,18 +1,21 @@
+import sys
 class Solution:
     def minPathSum(self, grid: List[List[int]]) -> int:
-        n = len(grid)
-        m = len(grid[0])
-        dp = [[-1 for j in range(m)] for i in range(n)]
-        result = self.pathHelper(n-1 , m-1 , grid , dp)
+        m = len(grid)
+        n = len(grid[0])
+        dp = [[-1 for _ in range(n)] for _ in range(m)]
+        result  = self.minPathSumHelper( grid , m-1 , n-1 , dp)
         return result
 
-    def pathHelper(self , i:int , j : int , grid : List[List[int]] , dp : List[List[int]]) -> int :
-        if i ==0 and j ==0 :
+    def minPathSumHelper(self , grid : [int] , i : int, j : int , dp : list[list[int]]) :
+        if i < 0 or j < 0 :
+            return +sys.maxsize
+        if i ==0 and j == 0 :
             return grid[i][j]
-        if i<0 or j < 0 :
-             return float('inf')
-        if dp[i][j] !=-1 : return dp[i][j] 
-        a = self.pathHelper(i , j-1 , grid , dp) + grid[i][j] # left -> right
-        b = self.pathHelper(i-1 , j , grid , dp) + grid[i][j] # top -> bottom
-        dp[i][j] = min(a,b)
-        return min(a,b)
+        if dp[i][j] !=-1 : return dp[i][j]
+
+        temp1 = self.minPathSumHelper(grid , i-1 , j , dp) + grid[i][j]
+        temp2 = self.minPathSumHelper(grid , i , j-1 , dp) + grid[i][j]
+
+        dp[i][j] = min(temp1 , temp2)
+        return dp[i][j]
