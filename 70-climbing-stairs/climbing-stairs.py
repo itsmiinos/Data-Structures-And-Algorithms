@@ -1,18 +1,17 @@
 class Solution:
     def climbStairs(self, n: int) -> int:
-        dynamic_answers = [-1]*(n+1)
-        result = self.climbStairsHelper(n , dynamic_answers)
+        dp = [-1]*(n+1)
+        result = self.helper(n , dp)
         return result
-    
-    def climbStairsHelper(self , n: int , dynamic_answers : [int]) -> int :
-        if n == 1 or n == 2: return n
-        if dynamic_answers[n]!=-1 : return dynamic_answers[n]
-        a = self.climbStairsHelper(n-1 , dynamic_answers)
-        b = self.climbStairsHelper(n-2 , dynamic_answers)
-        dynamic_answers[n] = a+b
-        return a+b
 
-    
+    def helper(self , i : int , dp : [int]) : 
+        if i == 0 :
+            return 1
+        if i < 0 :
+            return 0
+        if dp[i] !=-1 : return dp[i]
 
-
-        
+        temp1 = self.helper(i-1 , dp)
+        temp2 = self.helper(i-2 , dp)
+        dp[i] = temp1 + temp2
+        return temp1 + temp2
