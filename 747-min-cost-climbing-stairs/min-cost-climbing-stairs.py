@@ -1,15 +1,21 @@
 class Solution:
     def minCostClimbingStairs(self, cost: List[int]) -> int:
-        total_steps = len(cost)
-        res = 0
-        dp = [-1]*total_steps
-        result = min (self.climblingStairsHelper(total_steps-1 , cost , res, dp) , self.climblingStairsHelper(total_steps-2 , cost , res , dp))
+        dp = [-1]*(len(cost)+1)
+        result = min (self.helper(len(cost)-1 , cost , dp) , self.helper(len(cost)-2 , cost , dp))
         return result
     
-    def climblingStairsHelper(self , n:int , cost:[int], res:int , dp:[int]) -> int:
-        if n==0 or n==1 :
-            return cost[n]
-        if dp[n] != -1 : return dp[n]
-        res = cost[n] + min(self.climblingStairsHelper(n-1 , cost , res , dp),self.climblingStairsHelper(n-2 , cost , res, dp))
-        dp[n] = res
-        return res
+    def helper(self , i : int , cost : [int] , dp : [int]) -> int :
+
+        if i == 0 or i ==1 : 
+            return cost[i]
+        
+        if i < 0 : 
+            return +sys.maxsize
+
+        if dp[i] !=-1 : return dp[i]
+        temp1 = self.helper(i-1 , cost , dp)
+        temp2 = self.helper(i-2 , cost , dp)
+
+        ans = min(temp1 , temp2) + cost[i]
+        dp[i] = ans
+        return ans 
