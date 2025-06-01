@@ -1,17 +1,18 @@
 class Solution:
     def rob(self, nums: List[int]) -> int:
-        total_houses = len(nums)
-        loot = [-1]*total_houses
-        result = max(self.robHelper(total_houses-2 , nums , loot) , self.robHelper(total_houses-1 , nums , loot))
+        dp = [-1]*(len(nums)+1)
+        result = self.helper(len(nums)-1 , nums , dp)
         return result
 
-    def robHelper(self , n:int , nums:[int] , loot:[int]) -> int:
-        if n == 0 or n == 1:
-            return  nums[n]
-        if n<0 or n>=len(nums):
+    def helper(self , i:int , nums : [int] , dp : [int]) -> int : 
+        if i < 0 : 
             return 0
-        if loot[n] !=-1 : return loot[n]
-        a = self.robHelper(n-2 , nums, loot) + nums[n]
-        b = self.robHelper(n-3 , nums , loot) + nums[n]
-        loot[n] = max(a,b)
-        return max(a,b)
+        if i ==0:
+            return nums[i]
+        if dp[i] !=-1 : return dp[i]
+        temp1 = self.helper(i-2 , nums , dp) + nums[i]
+        temp2 = self.helper(i-1 , nums , dp)
+
+        ans = max(temp1 , temp2)
+        dp[i] = ans
+        return ans
