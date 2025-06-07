@@ -1,8 +1,7 @@
-class Solution(object):
-    def singleNumber(self, nums):
-        uniqueElement = 0
-        for item in nums :
-            uniqueElement ^=item
-        
-        return uniqueElement
-        
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+        res = 0
+        for i in range (len(nums)) : 
+            res = res ^ nums[i]
+
+        return res
