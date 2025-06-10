@@ -27,5 +27,6 @@ class Solution:
             right -= 1
 
         # Step 4: Convert back to number and check limit
-        number = int(''.join(map(str, nums)))
+        number = 0; 
+        for d in nums: number = (number * 10) + d
         return number if number < 2**31 else -1
