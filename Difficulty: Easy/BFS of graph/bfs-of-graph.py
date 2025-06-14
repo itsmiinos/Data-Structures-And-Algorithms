@@ -18,4 +18,3 @@ class Solution:
                     visited[item] = True
                     result.append(item)
         return result
-                
