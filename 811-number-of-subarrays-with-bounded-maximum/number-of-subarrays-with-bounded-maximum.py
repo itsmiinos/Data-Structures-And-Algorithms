@@ -1,18 +1,21 @@
 class Solution:
     def numSubarrayBoundedMax(self, nums: List[int], left: int, right: int) -> int:
-        sum = 0
-        last_greater_element = 0 
-        previous_starting_points = 0
+        last_greater_element_index = 0 
+        previous_valid_starting_points = 0 
+        total_subarray_count = 0 
 
-        for i in range (len(nums)) : 
+        n = len(nums)
 
-            if nums[i] < left : 
-                sum += previous_starting_points
+        for i in range(n) : 
             if nums[i] > right : 
-                last_greater_element = i+1
-                previous_starting_points = 0
-            if nums[i] >=left and nums[i] <=right :
-                previous_starting_points = i - last_greater_element + 1
-                sum += i - last_greater_element + 1
-
-        return sum
+                last_greater_element_index = i+1
+                previous_valid_starting_points = 0
+            
+            if nums[i] < left : 
+                total_subarray_count += previous_valid_starting_points
+            
+            if nums[i] >= left and nums[i] <= right : 
+                total_subarray_count += i - last_greater_element_index + 1
+                previous_valid_starting_points = i - last_greater_element_index + 1
+            
+        return total_subarray_count
