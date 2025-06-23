@@ -1,12 +1,19 @@
 class Solution:
-    def findSubarray(self, arr):
-        prefixSum = 0
-        count = 0
-        map = {0: 1}  # Include zero prefix sum to handle cases where subarray from index 0 sums to 0
+    def findSubarray(self, nums):
+        n = len(nums)
+        k=0
+        map = {}
+        map[0] = 1
+        ans = 0
+        psum = [0] * n
+        psum[0] = nums[0]
 
-        for num in arr:
-            prefixSum += num
-            count += map.get(prefixSum, 0)
-            map[prefixSum] = map.get(prefixSum, 0) + 1
+        for i in range(1, n):
+            psum[i] = psum[i - 1] + nums[i]
 
-        return count
+        for ep in range(n):
+            diff = psum[ep] - k
+            ans += map.get(diff , 0) #valid starting points with diff as prefix sum
+            map[psum[ep]] = map.get(psum[ep] , 0) + 1
+
+        return ans
