@@ -1,13 +1,14 @@
-import sys
 class Solution:
     def maxChunksToSorted(self, arr: List[int]) -> int:
+        prefixMax = [None]*len(arr)
+
+        prefixMax[0] = arr[0]
+        for i in range (1 , len(arr)) : 
+            prefixMax[i] = max(prefixMax[i-1] , arr[i])
+
         count = 0
-        max_value = -sys.maxsize
-
         for i in range(len(arr)) : 
-            max_value = max(max_value , arr[i])
-
-            if max_value == i : 
-                count +=1
+            if prefixMax[i] == i : 
+                count+=1
         
         return count
