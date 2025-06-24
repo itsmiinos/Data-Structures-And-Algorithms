@@ -1,19 +1,16 @@
 class Solution:
     def findKDistantIndices(self, nums: List[int], key: int, k: int) -> List[int]:
-        occurrences = []
-        visited = [False]*len(nums)
+        result = []
 
         for i in range(len(nums)) : 
             if nums[i] == key : 
-                occurrences.append(i)
-
-        ans = []
-        for i in range(len(occurrences)) : 
-            j=0
-            while j < len(nums) :
-                if abs(j - occurrences[i]) <= k and visited[j] == False: 
-                    ans.append(j)
-                    visited[j] = True
-                j+=1
+                starting_point = max(0 , i-k)
+                ending_point = min(len(nums)-1 , i+k)
+                for j in range (starting_point , ending_point+1) : 
+                    if abs(i-j)<=k : 
+                        if len(result)==0 : 
+                            result.append(j)
+                        elif j > result[len(result)-1] : 
+                            result.append(j)
         
-        return ans
+        return result
