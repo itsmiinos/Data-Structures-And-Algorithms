@@ -1,24 +1,21 @@
 class Solution:
     def maxChunksToSorted(self, arr: List[int]) -> int:
-        count = 0 
-        prefixMax = [0]*len(arr)
-        suffixMin = [0]*len(arr)
+        n = len(arr)
 
-        prefixMax[0] = arr[0] 
+        prefixMax = [None]*n
+        suffixMin = [None]*n
 
-        #caculating prefixMax 
-        for i in range(1,len(arr)) : 
-            prefixMax[i] = max(prefixMax[i-1], arr[i])
-
-
-        suffixMin[len(arr)-1] = arr[len(arr)-1]
-
-        #calculating suffixMax
-        for i in range(len(arr)-2 , -1 , -1) : 
+        prefixMax[0] = arr[0]
+        for i in range(1 , n) : 
+            prefixMax[i] = max(prefixMax[i-1] , arr[i])
+        
+        suffixMin[n-1] = arr[n-1]
+        for i in range(n-2 , -1 , -1) : 
             suffixMin[i] = min(suffixMin[i+1] , arr[i])
 
-        
-        for i in range(len(arr)-1) : 
+        count = 0 
+
+        for i in range(n-1) : 
             if prefixMax[i] <= suffixMin[i+1] : 
                 count+=1
         
