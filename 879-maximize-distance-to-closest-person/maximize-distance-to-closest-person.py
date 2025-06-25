@@ -1,19 +1,17 @@
-import sys
 class Solution:
     def maxDistToClosest(self, seats: List[int]) -> int:
-        last_one_index = -1
-        max_dist = -sys.maxsize
+        previous_occ = -1
+        max_distance = 0
+
         for i in range(len(seats)) : 
-            if seats[i] == 1 :
-                if last_one_index == -1 : 
-                    max_dist = max(max_dist , i)
+            if seats[i] == 1 : 
+                if previous_occ == -1 : 
+                    max_distance = i
+
                 else : 
-                    max_dist = max(max_dist , (i - last_one_index )// 2)
-                last_one_index = i 
-        
-        if seats[len(seats) - 1] == 0 :
-            max_dist = max(max_dist , len(seats) - 1 - last_one_index)
+                    max_distance = max(max_distance , (i-previous_occ)//2)
 
-        return max_dist
-
+                previous_occ = i
         
+        max_distance = max(max_distance , len(seats) - 1 - previous_occ)
+        return max_distance
