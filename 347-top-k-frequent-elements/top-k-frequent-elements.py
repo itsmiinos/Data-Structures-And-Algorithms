@@ -1,20 +1,20 @@
 import heapq
 class Solution:
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
-        count = {}
-
-        for num in nums :
-            count[num] = 1 + count.get(num, 0) 
-        
+        my_map = {}
         heap = []
+        for i in range(len(nums)) :
+            my_map[nums[i]] = my_map.get(nums[i] , 0) + 1
         
-        for num in count.keys() :
-            heapq.heappush(heap, (count[num], num))
-            if len(heap) > k:
-                heapq.heappop(heap)
+        for key in my_map : 
+            if len(heap) < k : 
+                heapq.heappush(heap , (my_map[key] , key))
+            else : 
+                if my_map[key] > heap[0][0] : 
+                    heapq.heappop(heap)
+                    heapq.heappush(heap , (my_map[key] , key))
+        result = []
+        while len(heap) > 0 : 
+            result.append(heapq.heappop(heap)[1])
         
-        res = []
-        for i in range(k) :
-            res.append(heapq.heappop(heap)[1])
-        
-        return res
+        return result
