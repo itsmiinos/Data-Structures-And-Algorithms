@@ -2,7 +2,7 @@ class Solution:
     def kthCharacter(self, k: int) -> str:
         word = "a"
         result = ""
-        while len(result) <= k  : 
+        while len(result) < k  : 
             result = self.createNewString(word)
             word = result
         return result[k-1]
@@ -17,3 +17,9 @@ class Solution:
             # print(word)
         
         return word+result
+
+
+        
+        
+        
+        
