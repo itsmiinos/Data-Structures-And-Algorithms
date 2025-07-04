@@ -1,26 +1,23 @@
 class Solution:
     def delete_node(self, head, x):
         #code here
-        
-        if x == 1 : 
-            newHead = head.next
-            if newHead : 
-                newHead.prev = None
-                head = newHead
-            return head
-        
         temp = head
-        counter = 1
         
-        while temp is not None : 
-            if counter == x : 
-                if temp.prev : 
-                    temp.prev.next = temp.next
-                if temp.next : 
-                    temp.next.prev = temp.prev
-                break
+        if x == 1:
+            if head.next:
+                head.next.prev = None
+            return head.next
         
+        count=1
+        while count < x :
             temp = temp.next
-            counter +=1
+            count+=1
+        
+        if temp.next:
+            temp.next.prev = temp.prev
+        if temp.prev:
+            temp.prev.next = temp.next
         
         return head
+        
+       
