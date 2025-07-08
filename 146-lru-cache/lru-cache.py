@@ -1,76 +1,99 @@
-class ListNode : 
-
-    def __init__ (self , key : int , value : int) : 
-        self.key = key
-        self.value = value
-        self.prev = None
-        self.next = None
-
-
 class LRUCache:
 
     def __init__(self, capacity: int):
-        self.my_map = {}
-        self.cap = 0
-        self.total_cap = capacity
-    
-        self.head = ListNode(-1 , -1)
-        self.tail = ListNode(-1 , -1)
+        self.size = capacity
+        self.head = ListNode(0 , 0)
+        self.tail = ListNode(0 , 0)
+
         self.head.next = self.tail
         self.tail.prev = self.head
 
+        self.my_map = {} # {key : ListNode}
+
     def get(self, key: int) -> int:
         if key in self.my_map : 
-            remove_node = self.my_map.get(key)
-            self.removeAnyNode(self.head, remove_node)
-            self.addNode(self.tail , remove_node)
-            return remove_node.value
-        else :
-            return -1
+            node = self.my_map[key]
+            prev_node = node.prev
+            next_node = node.next
 
+            prev_node.next = next_node
+            next_node.prev = prev_node
+
+            node.prev = None
+            node.next = None
+
+            last_node = self.tail.prev
+            last_node.next = node
+            node.prev = last_node
+            node.next = self.tail
+            self.tail.prev = node
+
+            return node.val
+        return -1
 
     def put(self, key: int, value: int) -> None:
         if key in self.my_map : 
-            remove_node = self.my_map.get(key)
-            self.removeAnyNode(self.head , remove_node)
-            new_node = ListNode(key , value)
-            self.addNode(self.tail , new_node)
-            self.my_map[key] = new_node
-        else :
-            if self.cap == self.total_cap :
-                oldest_node = self.head.next
-                self.my_map.pop(oldest_node.key) 
-                self.removeAnyNode(self.head , oldest_node)
-                new_node = ListNode(key , value)
-                self.addNode(self.tail , new_node)
-                self.my_map[key] = new_node
-            else :
-                new_node = ListNode(key , value)
-                self.addNode(self.tail , new_node)
-                self.my_map[key] = new_node
-                self.cap +=1
+            node = self.my_map[key]
+            prev_node = node.prev
+            next_node = node.next
+            node.val = value
 
-    def addNode(self , tail : Optional[ListNode] , new_node : Optional[ListNode]) -> None : 
-        prev_node = tail.prev
+            prev_node.next = next_node
+            next_node.prev = prev_node
 
-        #addition of node : 
-        prev_node.next = new_node
-        new_node.prev = prev_node
-        new_node.next = tail
-        tail.prev = new_node
+            node.prev = None
+            node.next = None
 
-    def removeAnyNode(self , head : Optional[ListNode] , old_node : Optional[ListNode]) -> Optional[ListNode] :
+            last_node = self.tail.prev
+            last_node.next = node
+            node.prev = last_node
+            node.next = self.tail
+            self.tail.prev = node
 
-        prev_node = old_node.prev
-        next_node = old_node.next
+            self.my_map[key] = node
 
-        prev_node.next = next_node
-        next_node.prev = prev_node
+            return
 
-        old_node.prev = None
-        old_node.next = None
 
-        return old_node
+        if len(self.my_map) < self.size : 
+            node = ListNode(value , key)
+            last_node = self.tail.prev
+            last_node.next = node
+            node.prev = last_node
+            node.next = self.tail
+            self.tail.prev = node
+    
+            self.my_map[key] = node
+        
+        else : 
+            node_to_remove = self.head.next
+            next_node_to_remove = node_to_remove.next
+            next_node_to_remove.prev = self.head
+            self.head.next = next_node_to_remove
+
+            node_to_remove.next = None
+            node_to_remove.prev = None
+            key_to_remove = node_to_remove.key
+
+            del self.my_map[key_to_remove]
+
+            node = ListNode(value , key)
+            last_node = self.tail.prev
+            last_node.next = node
+            node.prev = last_node
+            node.next = self.tail
+            self.tail.prev = node
+    
+            self.my_map[key] = node
+
+
+
+class ListNode :
+    def __init__(self , value : int , key : int , next = None , prev = None ) :
+        self.val = value
+        self.next = next
+        self.prev = prev
+        self.key = key
 
 
 # Your LRUCache object will be instantiated and called as such:
