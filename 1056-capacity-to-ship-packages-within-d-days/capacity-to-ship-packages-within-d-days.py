@@ -32,7 +32,7 @@ class Solution:
         
         i = 0 
         running_sum = 0
-        count = 1
+        count = 0
         while i < len(weights) : 
             
             if running_sum + weights[i] > w : 
@@ -42,7 +42,7 @@ class Solution:
             running_sum += weights[i]
             i+=1
 
-        return count
+        return count + 1
             
 
         
