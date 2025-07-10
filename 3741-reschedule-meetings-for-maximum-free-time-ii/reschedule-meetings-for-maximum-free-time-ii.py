@@ -1,32 +1,38 @@
 class Solution:
     def maxFreeTime(self, eventTime: int, startTime: List[int], endTime: List[int]) -> int:
-        size = len(startTime)
-        gapsArr,left = [],0
-        for i in range(size):
-            gap = startTime[i] - left
-            gapsArr.append(gap)
-            left = endTime[i]
-        gapsArr.append(eventTime - endTime[-1])
-        maxGapPrefix,maxGapSuffix = [0 for i in range(size)],[0 for i in range(size)]
-        maxGapPrefix[0] = gapsArr[0]
-        maxGapSuffix[size-1] = gapsArr[-1]
+        # store all gaps for convenience
+        gaps = [startTime[0]]
+        for i in range(1, len(startTime)):
+            gaps.append(startTime[i] - endTime[i - 1])
+        gaps.append(eventTime - endTime[-1])
 
-        # calculate left right max
-        for i in range(1,size):
-            maxGapPrefix[i]= max(maxGapPrefix[i-1],gapsArr[i])
-        for i in range(size-1,0,-1):
-            maxGapSuffix[i-1]= max(maxGapSuffix[i],gapsArr[i])
+        # prefs: max gap to left
+        prefs = [gaps[0]]
+        for i in range(1, len(gaps) - 1):
+            prefs.append(max(prefs[-1], gaps[i]))
         
-        ans = 0
-        for i in range(size):
-            curr = gapsArr[i]+gapsArr[i+1]
-            barSize = endTime[i] - startTime[i]
-            isValid = False
-            if(i-1 >= 0):
-                isValid = isValid or maxGapPrefix[i-1] >= barSize
-            if(i+1 < size):
-                isValid = isValid or maxGapSuffix[i+1] >= barSize
-            if(isValid):
-                curr += barSize
-            ans = max(ans, curr)
+        # suffs: max gap to right
+        suffs = [gaps[-1]]
+        for i in range(len(gaps) - 2, 0, -1):
+            suffs.append(max(suffs[-1], gaps[i]))
+        suffs = list(reversed(suffs))
+
+        ans, N = 0, len(startTime)
+
+        for i, (start, end) in enumerate(zip(startTime, endTime)):
+            # consider current slot
+            slot = end - start
+            # consider gaps immediately to left and right
+            lGap, rGap = gaps[i], gaps[i + 1]
+            # try and find the biggest gap before the left slot
+            bestLeft = -1 if i == 0 else prefs[i - 1]
+            # try and find the biggest gap after the right slot
+            bestRight = -1 if i == N - 1 else suffs[i + 1]
+            # we can always shift the slot within its gaps...
+            time = lGap + rGap
+            # ...but if there's space outside of its gaps we can move entirely 
+            if bestLeft >= slot or bestRight >= slot:
+                time += slot
+            ans = max(ans, time)
+        
         return ans
