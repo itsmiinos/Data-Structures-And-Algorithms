@@ -32,8 +32,8 @@ class Solution:
 
         indegree = [0]*numCourses
 
-        for _ , v in prerequisites : 
-            indegree[v] +=1
+        for u , v in prerequisites : 
+            indegree[u] +=1
         
         return indegree
     
@@ -45,6 +45,6 @@ class Solution:
             neighbours[i] = []
         
         for u , v in prerequisites : 
-            neighbours[u].append(v)
+            neighbours[v].append(u)
         
         return neighbours
