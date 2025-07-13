@@ -2,19 +2,21 @@ class Solution:
     # Function to return Breadth First Search Traversal of given graph.
     def bfs(self, adj):
         # code here
-        my_queue=[]
+        start = 0
+        my_queue = []
         result = []
-        my_queue.append(adj[0])
-        result.append(0)
-        visited = [False]*(len(adj) + 1)
-        visited[0] = True
+        visited = [False]*len(adj)
+        visited[start] = True
+        my_queue.append(start)
         
         while len(my_queue) > 0 : 
-            temp_list = my_queue.pop(0)
+            popped = my_queue.pop(0)
+            result.append(popped)
+            neigh = adj[popped]
             
-            for item in temp_list : 
-                if visited[item] == False :
-                    my_queue.append(adj[item])
-                    visited[item] = True
-                    result.append(item)
+            for n in neigh : 
+                if visited[n] == False : 
+                    visited[n] = True
+                    my_queue.append(n)
+        
         return result
