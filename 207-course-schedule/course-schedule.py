@@ -1,41 +1,50 @@
 class Solution:
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
-        adj = self.convertToAdj(numCourses , prerequisites)
-
-        indegree = [0]*(numCourses)
-        visited = [False]*(numCourses)
-        for u,v in prerequisites : 
-            indegree[u] +=1
+        indegree = self.calculateIndegree(numCourses , prerequisites)
+        neighbours = self.calculateNeighbours(numCourses , prerequisites)
+        visited = [False]*numCourses
         
         my_queue = []
-        for i in range(numCourses) : 
+        for i in range(len(indegree)) : 
             if indegree[i] == 0 :
                 my_queue.append(i)
         
         while len(my_queue) > 0 : 
-            temp = my_queue.pop(0)
-            visited[temp] = True
-            neighbours = adj[temp]
+            popped = my_queue.pop(0)
+            
+            visited[popped] = True
+            neighbour = neighbours[popped]
 
-            for n in neighbours : 
-                indegree[n] -=1 
-                if indegree[n] == 0 :
+            for n in neighbour : 
+                indegree[n]-=1
+                if indegree[n] == 0 : 
                     my_queue.append(n)
         
-        for i in range (len(visited)) : 
+        for i in range(len(visited)) : 
             if visited[i] == False : 
                 return False
         
         return True
+        
 
+
+    def calculateIndegree(self , numCourses : int , prerequisites : List[List[int]]) -> [int] : 
+
+        indegree = [0]*numCourses
+
+        for _ , v in prerequisites : 
+            indegree[v] +=1
+        
+        return indegree
     
-    def convertToAdj(self , numCourses : int , prerequisites : list[list[int]]) -> list[list[int]] :
-        result = []
+    def calculateNeighbours(self , numCourses : int , prerequisites : List[List[int]]) -> List[List[int]] : 
+
+        neighbours = [None]*numCourses
 
         for i in range(numCourses) : 
-            result.append([])
-
-        for u,v in prerequisites : 
-            result[v].append(u)
-
-        return result
+            neighbours[i] = []
+        
+        for u , v in prerequisites : 
+            neighbours[u].append(v)
+        
+        return neighbours
