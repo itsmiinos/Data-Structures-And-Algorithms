@@ -2,7 +2,7 @@ class Solution:
     def nextGreaterElement(self, nums1: List[int], nums2: List[int]) -> List[int]:
         my_stack = []
         i = 0
-        next_greater = [-1]*len(nums2)
+        hashmap = {}
 
         while i < len(nums2) : 
 
@@ -10,7 +10,7 @@ class Solution:
                 popped = my_stack.pop(-1)
                 popped_element = popped[0]
                 popped_index = popped[1]
-                next_greater[popped_index] = nums2[i]
+                hashmap[nums2[popped_index]] = nums2[i]
             
             my_stack.append([nums2[i] , i])
             i+=1
@@ -18,8 +18,6 @@ class Solution:
         result = []
 
         for i in range(len(nums1)) : 
-            for j in range(len(nums2)) : 
-                if nums1[i] == nums2[j] : 
-                    result.append(next_greater[j])
+            result.append(hashmap.get(nums1[i])) if nums1[i] in hashmap else result.append(-1)
         
         return result
