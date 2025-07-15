@@ -1,70 +1,67 @@
-import sys
 class Solution:
     def maximalRectangle(self, matrix: List[List[str]]) -> int:
-        heights = [0]*(len(matrix[0]))
-        max_rectangle_area = -sys.maxsize
+        n = len(matrix)
+        m = len(matrix[0])
+        pSum = [[0 for j in range(m)] for i in range(n)]
 
-        for i in range(len(matrix)) :
-            for j in range(len(matrix[0])) : 
-                if matrix[i][j] == '1' : 
-                    heights[j] += 1
-                else : 
-                    heights[j] = 0
+        for j in range(m) : 
+            sum = 0
+            for i in range(n) : 
+                sum += int(matrix[i][j])
+                if matrix[i][j] == '0' : 
+                    sum = 0
+                pSum[i][j] = sum
+
+        max_area = -float('inf')
+
+        for i in range(n) : 
+    
+            max_area = max(max_area , self.largestRectangleArea(pSum[i]))
         
-            nse_on_right = self.nextSmallerElementOnTheRight(heights)
-            nse_on_left = self.nextSmallerElementOnTheLeft(heights)
+        return max_area
 
+    def largestRectangleArea(self, heights: List[int]) -> int:
+        left_smallest_element = [-1]*len(heights)
+        right_smallest_element = [-1]*len(heights)
+
+        left_stack = []
+        right_stack = []
+
+        for i in range(len(heights) - 1 , -1 , -1) : 
+            while len(left_stack) > 0 and heights[i] < left_stack[-1][0] : 
+                popped = left_stack.pop(-1)
+                popped_value = popped[0]
+                popped_index = popped[1]
+
+                left_smallest_element[popped_index] = i
             
-            for i in range(len(heights)) :
-                nse_on_right_index = nse_on_right[i] - 1
-                nse_on_left_index = nse_on_left[i] + 1
+            left_stack.append([heights[i] , i])
+        
+        while len(left_stack) > 0 : 
+            popped = left_stack.pop(-1)
+            popped_index = popped[1]
 
-                area = heights[i] * (nse_on_right_index - nse_on_left_index + 1)
-
-                max_rectangle_area = max(max_rectangle_area , area)
-
-        return max_rectangle_area
-
-    
-    def nextSmallerElementOnTheRight(self, heights : [int]) -> [int] : 
-        stack = []
-        result = [-1]*len(heights)
-
+            left_smallest_element[popped_index] = -1
+        
         for i in range(len(heights)) : 
+            while len(right_stack) > 0 and heights[i] < right_stack[-1][0] : 
+                popped = right_stack.pop(-1)
+                popped_value = popped[0]
+                popped_index = popped[1]
 
-            while len(stack) > 0 and heights[i] < stack[-1].val : 
-                popped = stack.pop(-1)
-                result[popped.index] = i
-
-            stack.append(Pair(heights[i] , i))
-
-        while len(stack) > 0 : 
-            popped = stack.pop(-1)
-            result[popped.index] = len(heights)
-
-        return result
-    
-    def nextSmallerElementOnTheLeft(self , heights : [int]) -> [int] : 
-        stack = []
-        result = [-1]*len(heights)
-
-        for i in range(len(heights)-1 , -1 , -1) : 
-
-            while len(stack) > 0 and heights[i] < stack[-1].val : 
-                popped = stack.pop(-1)
-                result[popped.index] = i
-
-            stack.append(Pair(heights[i] , i))
+                right_smallest_element[popped_index] = i
+            
+            right_stack.append([heights[i] , i])
         
-        while len(stack) > 0 :
-            popped = stack.pop(-1)
-            result[popped.index] = -1
+        while len(right_stack) > 0 : 
+            popped = right_stack.pop(-1)
+            popped_index = popped[1]
+
+            right_smallest_element[popped_index] = len(heights)
+
+        max_area = -float('inf')
+        for i in range(len(heights)) : 
+            area = heights[i] * ((right_smallest_element[i]-1) - (left_smallest_element[i]+1) + 1)
+            max_area = max(area , max_area)
         
-        return result
-
-
-class Pair : 
-    
-    def __init__(self , value : int , index : int) :
-        self.val = value
-        self.index = index
+        return max_area
