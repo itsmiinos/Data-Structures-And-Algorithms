@@ -4,59 +4,88 @@ class Solution:
         operands = []
 
         i = 0
-        while i < len(s) : 
-            if s[i] >= '0' and s[i] <='9' : 
-                number = ''
-                while i < len(s) and s[i] >= '0' and s[i] <='9' : 
-                    number += s[i]
-                    i+=1
-                
-                number = int(number)
+        while i < len(s):
+            if s[i] == ' ':
+                i += 1
+                continue
+
+            if s[i] == '-' and self.is_unary(i, s):
+                i += 1
+                while i < len(s) and s[i] == ' ':
+                    i += 1
+                if i < len(s) and s[i] == '(':
+                    operands.append(0)
+                    operators.append('-')
+                    continue
+                num = 0
+                while i < len(s) and s[i].isdigit():
+                    num = num * 10 + int(s[i])
+                    i += 1
+                operands.append(-num)
+                i -= 1
+
+            elif s[i].isdigit():
+                number = 0
+                while i < len(s) and s[i].isdigit():
+                    number = number * 10 + int(s[i])
+                    i += 1
                 operands.append(number)
-            
-            else : 
-                if s[i] == '+' or s[i] == '-' : 
-                    if len(operands) > 1 : 
-                        while len(operands) > 1 : 
-                            second_number = operands.pop(-1)
-                            first_number = operands.pop(-1)
-                            operator = operators.pop(-1)
-                            answer = self.calculation(first_number , second_number , operator)
-                            operands.append(answer)
-                        
-                    operators.append(s[i])
-                    
-                elif s[i] == '*' or s[i] == '/' : 
-                    
-                    if len(operators) > 0 and (operators[-1] == '*' or operators[-1] == '/') : 
-                        second_number = operands.pop(-1)
-                        first_number = operands.pop(-1)
-                        operator = operators.pop(-1)
-                        answer = self.calculation(first_number , second_number , operator)
-                        operands.append(answer)
+                i -= 1
 
-                    operators.append(s[i])
-                i+=1
-            print(operands , operators)
-        
-        while len(operators) > 0 : 
-            second_number = operands.pop(-1)
-            first_number = operands.pop(-1)
-            operator = operators.pop(-1)
-            answer = self.calculation(first_number , second_number , operator)
-            operands.append(answer)
-        
-        return operands.pop(-1)
-        
-                    
-    
+            elif s[i] in ['+', '-', '*', '/']:
+                while (operators and operators[-1] != '(' and
+                       self.precedence(operators[-1]) >= self.precedence(s[i])):
+                    operand_two = operands.pop()
+                    operand_one = operands.pop()
+                    operator = operators.pop()
+                    ans = self.calculation(operand_one, operand_two, operator)
+                    operands.append(ans)
+                operators.append(s[i])
 
-    def calculation(self , a : int , b : int , c : str) -> int :
-        if c == '+' : 
+            elif s[i] == '(':
+                operators.append(s[i])
+
+            elif s[i] == ')':
+                while operators and operators[-1] != '(':
+                    operand_two = operands.pop()
+                    operand_one = operands.pop()
+                    operator = operators.pop()
+                    ans = self.calculation(operand_one, operand_two, operator)
+                    operands.append(ans)
+                operators.pop()  # Remove '('
+
+            i += 1
+
+        while operators:
+            operand_two = operands.pop()
+            operand_one = operands.pop()
+            operator = operators.pop()
+            ans = self.calculation(operand_one, operand_two, operator)
+            operands.append(ans)
+
+        return operands[0]
+
+    def is_unary(self, i: int, s: str) -> bool:
+        if i == 0:
+            return True
+        j = i - 1
+        while j >= 0 and s[j] == ' ':
+            j -= 1
+        return j < 0 or s[j] in '(-+*/'
+
+    def calculation(self, a: int, b: int, c: str) -> int:
+        if c == '+':
             return a + b
-        elif c == '-' : 
+        elif c == '-':
             return a - b
-        elif c == '*' :
+        elif c == '*':
             return a * b
-        else : 
-            return a // b
+        elif c == '/':
+            return int(a / b)  # truncate toward zero
+
+    def precedence(self, c: str) -> int:
+        if c in ('*', '/'):
+            return 2
+        elif c in ('+', '-'):
+            return 1
+        return 0
