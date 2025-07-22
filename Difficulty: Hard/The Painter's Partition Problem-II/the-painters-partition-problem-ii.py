@@ -1,25 +1,25 @@
 #User function Template for python3
 
 class Solution:
-    def minTime (self, arr, k):
+    def minTime (self, nums, k):
         #code here
-        max_value = -float('inf')
-        sum_of_all_tasks = 0
+        minimum_sum = -float('inf')
+        maximum_sum = 0
+
+        for i in range(len(nums)) : 
+            minimum_sum = max(minimum_sum , nums[i])
+            maximum_sum += nums[i]
         
-        for i in range(len(arr)) : 
-            max_value = max(max_value , arr[i])
-            sum_of_all_tasks += arr[i]
-        
-        result = self.doBinarySearch(max_value , sum_of_all_tasks , k , arr)
+        result = self.doBinarySearch(minimum_sum , maximum_sum , nums , k)
         return result
     
-    def doBinarySearch(self , low : int , high : int , k : int , arr : [int]) -> int : 
-        
+    def doBinarySearch(self , low : int , high : int , nums : list[int] , k: int) -> int : 
         ans = 0
-        while low <= high : 
-            mid = low + ((high - low) // 2)
-            
-            if self.checkWorkerCount(mid , arr) <= k : 
+
+        while low<=high : 
+            mid = low + (high - low) // 2
+
+            if self.calculatePartitionsForGivenSum(mid , nums) <= k : 
                 ans = mid
                 high = mid - 1
             
@@ -28,20 +28,15 @@ class Solution:
         
         return ans
     
-    def checkWorkerCount(self , w: int , arr : [int]) -> int : 
-        
-        running_sum = 0
+    def calculatePartitionsForGivenSum(self , n : int , nums : list[int]) -> int : 
         count = 0
-        i = 0
-        
-        while i < len(arr) : 
-            if running_sum + arr[i] > w : 
+        running_sum = 0
+        for i in range(len(nums)) : 
+            if running_sum + nums[i] > n : 
                 count+=1
                 running_sum = 0
-            
-            running_sum += arr[i]
-            i+=1
-        
+            running_sum += nums[i]
+
         return count+1
-            
+
         
