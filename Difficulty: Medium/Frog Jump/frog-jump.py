@@ -1,19 +1,16 @@
-#User function Template for python3
 class Solution:
-    def minCost(self, height):
+    def minCost(self, heights):
         # code here
-        dp = [-1]*(len(height))
-        return self.helper(height, len(height)-1, dp)
-        return result
+        n = len(heights)
+        dp = [-1] * n
+        dp[0] = 0
 
-    def helper(self , height : list[int] , i : int , dp : [int]) : 
-        if i == 0 :
-            return 0
-        if dp[i] !=-1 : return dp[i]
-
-        temp1 = self.helper(height , i-1 , dp) + abs(height[i] - height[i-1])
-        temp2 = float('inf')
-        if i > 1:
-            temp2 = self.helper(height, i-2, dp) + abs(height[i] - height[i-2])
-        dp[i] = min(temp1 , temp2)
-        return dp[i]
+        for i in range(1 , n) :
+            one_step = dp[i-1] + abs(heights[i] - heights[i-1])
+            two_step = float('inf')
+            if i > 1 :
+                two_step = dp[i-2] + abs(heights[i] - heights[i-2])
+            
+            dp[i] = min(one_step , two_step)
+        
+        return dp[n-1]
