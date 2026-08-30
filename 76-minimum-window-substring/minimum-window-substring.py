@@ -1,32 +1,44 @@
-import sys
 class Solution:
     def minWindow(self, s: str, t: str) -> str:
-        map_t = {}
-        map_s = {}
+        if len(t) > len(s) :
+            return ""
 
-        for i in range(len(t)) : 
-            map_t[t[i]] = map_t.get(t[i] , 0) + 1
+        t_map = collections.defaultdict(int)
         
-        start = 0
-        ans_string = ""
-        minimum_window_length = sys.maxsize
-        for i in range(len(s)) : 
-            map_s[s[i]] = map_s.get(s[i] , 0) + 1
+        for i in range(len(t)):
+            t_map[t[i]] +=1
 
-            while self.hasElements(map_s , map_t) : 
-                if i - start + 1 < minimum_window_length : 
-                    minimum_window_length = i - start + 1
-                    ans_string = s[start : i+1]
-                map_s[s[start]] = map_s.get(s[start] , 0) - 1
-                if map_s[s[start]] == 0 : 
-                    del map_s[s[start]]
-                start+=1
+        i = 0
+        j = 0
+        min_start = -1
+        min_len = float('inf')
+        s_map = collections.defaultdict(int)
 
-        return ans_string
- 
+        while j < len(s) :
+            s_map[s[j]] +=1
+
+            while self.s_contains_t(s_map , t_map) :
+                
+                if (j - i + 1) < min_len :
+                    min_start = i
+                    min_len = (j - i + 1)
+                
+                s_map[s[i]]-=1
+                i+=1
+            
+            j+=1
         
-    def hasElements(self , map1 : {str , int} , map2 : {str : int}) -> bool : 
-        for u in map2 : 
-            if u not in map1 or map1[u]<map2[u] : 
+        if min_start == -1 :
+            return ""
+            
+        return s[min_start : min_start + min_len]
+
+    def s_contains_t(self , s_map , t_map) -> bool :
+
+        for key in t_map.keys() :
+            if key not in s_map or t_map[key] > s_map[key] :
                 return False
+        
         return True
+        
+            
