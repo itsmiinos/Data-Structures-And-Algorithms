@@ -16,5 +16,5 @@ class Solution:
             
             else :
                 my_stack.append(s[i])
-        print(my_stack)
+        
         return len(my_stack) == 0
