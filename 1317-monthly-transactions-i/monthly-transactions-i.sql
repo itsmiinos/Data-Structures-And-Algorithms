@@ -7,14 +7,21 @@ sum(case when state = 'approved' then amount else 0 end) as approved_total_amoun
 from transactions
 group by country , date_format(trans_date , '%Y-%m');
 
-# Pyspark : 
--- result = (transactions
---         .groupBy(date_format(col("trans_date") , 'yyyy-MM') , col("country"))
---         .agg(
---             count(col("id")).alias("trans_count"),
---             sum(when(col("state") == "approved" , 1).otherwise(0)).alias("approved_count"),
---             sum(col("amount")).alias("trans_total_amount"),
---             sum(when(col("state") == "approved" , col("amount")).otherwise(0)).alias("approved_total_amount")
---         )
 
+-- result = (transactions.withColumn("month" ,  (date_format(col("trans_date")) , 'yyyy-MM')
+--             .groupBy(col("month") , col("country"))
+--             .agg(
+--                 count("*").alias("trans_count"),
+--                 sum(when(state == 'approve' , 1).otherwise(0)).alias("approved_count"),
+--                 sum(amount).alias("trans_total_amount")
+--                 sum(when(state == 'approved' , amount).otherwise(0)).alias("approved_total_amount")
+--             )
+--             .select(
+--                 col("month"),
+--                 col("country"),
+--                 col("trans_count"),
+--                 col("approved_count"),
+--                 col("trans_total_amount"),
+--                 col("approved_total_amount")
+--             )
 -- )
