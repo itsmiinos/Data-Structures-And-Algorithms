@@ -29,10 +29,3 @@ class Solution:
             return value1 * value2
         else : 
             return int(value1 / value2)
-    
-    def precedence(self , operator : str) -> int :
-        if operator == '*' or operator == '/' : 
-            return 2
-        elif operator == '+' or operator == '-' : 
-            return 1
-        return 0
