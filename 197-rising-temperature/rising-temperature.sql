@@ -6,6 +6,8 @@ select id from last_day_temp where last_temp is not null and last_temp < tempera
 
 -- window = Window.orderBy(col("recordDate"))
 -- result = (weather.withColumn("last_day_temp" , lag(col("temperature")).over(window))
---             .filter(col("last_day_temp") < col("temperature"))
+--                 .withColumn("last_day_date" , lag(col("recordDate")).over(window))
+--                 .withColumn("datediff" , datediff(col("recordDate") , col("last_day_date")))
+--             .filter((col("last_day_temp") < col("temperature")) & (col("datediff") == 1))
 --             .select(col("id"))
 -- )
