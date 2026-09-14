@@ -1,16 +1,25 @@
 class Solution:
     def numSubarraysWithSum(self, nums: List[int], goal: int) -> int:
-        my_map = collections.defaultdict(int)
-        sum = 0
-        count = 0
-        my_map[0] = 1
+        return self.solve(nums , goal) - self.solve(nums , goal - 1)
+    
+    def solve(self , nums , goal) -> int :
+        if goal < 0 :
+            return 0
 
-        for i in range(len(nums)) :
-            sum+= nums[i]
-            diff = sum - goal
-            if diff in my_map :
-                count += my_map[diff]
-           
-            my_map[sum] += 1
+        i = 0
+        j = 0
+        count = 0
+        bsum = 0
+
+        while j < len(nums) :
+            bsum += nums[j]
+
+            while i < len(nums) and bsum > goal :
+                bsum -= nums[i]
+                i+=1
+
+            count += (j - i + 1)
+            
+            j+=1
         
         return count
