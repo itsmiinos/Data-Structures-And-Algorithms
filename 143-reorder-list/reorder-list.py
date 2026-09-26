@@ -8,7 +8,9 @@ class Solution:
         """
         Do not return anything, modify head in-place instead.
         """
-        # get the middle point
+        #step1  : find the midpoint
+        #step2 : reverse the second half
+        #step3 : merge alternate nodes
 
         slow = head
         fast = head
@@ -18,9 +20,8 @@ class Solution:
             fast = fast.next.next
 
         second_head = slow.next
-        slow.next = None #dividing the two list
+        slow.next = None
 
-        #reversing the second list
         prev = None
         curr = second_head
 
@@ -30,23 +31,17 @@ class Solution:
             prev = curr
             curr = curr_next
         
-        #adding to the list one by one
-        p1 = head
-        p2 = prev
+        first_head = head
+        second_head = prev
 
-        i = 1
 
-        while p1 is not None and p2 is not None : 
-            if i%2 == 0 : 
-                p2_next = p2.next
-                p1_next = p1.next
-                p1.next = p2
-                p2.next = p1_next
-                p2 = p2_next
-                p1 = p1_next
-            i+=1
+        while first_head and second_head :
+            first_head_next = first_head.next
+            first_head.next = second_head
+            second_head_next = second_head.next
+            second_head.next = first_head_next
+            first_head = first_head_next
+            second_head = second_head_next
         
         return head
-
-        
         
