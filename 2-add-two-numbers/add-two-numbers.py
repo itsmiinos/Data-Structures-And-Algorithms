@@ -13,7 +13,7 @@ class Solution:
         dummyNode = ListNode()
         temp = dummyNode
 
-        while sum > 0 or carry > 0 or l1 or l2 :
+        while l1 or l2 :
             val1 = l1.val if l1 is not None else 0
             val2 = l2.val if l2 is not None else 0
             sum = val1 + val2 + carry
@@ -21,13 +21,17 @@ class Solution:
             if sum > 9 :
                 carry = sum // 10
                 sum = sum % 10
+            else :
+                carry = 0
             newNode = ListNode(sum)
-            sum = 0
             temp.next = newNode
             print(newNode.val)
             temp = temp.next
             l1 = l1.next if l1 is not None else None
             l2 = l2.next if l2 is not None else None
+        
+        if carry > 0 :
+            temp.next = ListNode(carry)
         
         head = dummyNode.next
         return head
