@@ -1,8 +1,16 @@
+class Node :
+    
+    def __init__(self , val = 0 , key = 0 , next = None , prev = None) -> None :
+        self.val = val
+        self.next = next
+        self.prev = prev
+        self.key = key
+
 class LRUCache:
 
     def __init__(self, capacity: int):
-        self.size = capacity
-        self.hashmap = {}
+        self.cap = capacity
+        self.records = {}
         self.head = Node()
         self.tail = Node()
 
@@ -10,94 +18,71 @@ class LRUCache:
         self.tail.prev = self.head
 
     def get(self, key: int) -> int:
-        if key not in self.hashmap : 
-            return -1
-        
-        else : 
-            node = self.hashmap[key]
-            prev_node = node.prev
-            next_node = node.next
+        if key in self.records :
+            node = self.records[key]
+            prevNode = node.prev
+            nextNode = node.next
 
-            prev_node.next = next_node
-            next_node.prev = prev_node
+            nextNode.prev = prevNode
+            prevNode.next = nextNode
 
-            last_node = self.tail.prev
-            last_node.next = node
-            node.prev = last_node
+            prevTailNode = self.tail.prev
+            prevTailNode.next = node
+            node.prev = prevTailNode
             node.next = self.tail
             self.tail.prev = node
 
-            value = node.val
-            return value
-        
+            self.records[key] = node
+
+            return node.val
+        else :
+            return -1
 
     def put(self, key: int, value: int) -> None:
+        if key in self.records :
+            node = self.records[key]
+            prevNode = node.prev
+            nextNode = node.next
 
-        if key in self.hashmap : 
+            nextNode.prev = prevNode
+            prevNode.next = nextNode
 
-            node = self.hashmap[key]
-            node.val = value
-
-            prev_node = node.prev
-            next_node = node.next
-
-            prev_node.next = next_node
-            next_node.prev = prev_node
-
-            last_node = self.tail.prev
-            last_node.next = node
-            node.prev = last_node
+            prevTailNode = self.tail.prev
+            prevTailNode.next = node
+            node.prev = prevTailNode
             node.next = self.tail
             self.tail.prev = node
-            
+            node.val = value
 
-            self.hashmap[key] = node
+            self.records[key] = node
+
+
+        elif len(self.records) == self.cap :
+            lastUsedNode = self.head.next
+            del self.records[lastUsedNode.key]
+
+            nextNode = lastUsedNode.next
+            self.head.next = nextNode
+            nextNode.prev = self.head
+
+            node = Node(value , key)
+            prevTailNode = self.tail.prev
+            prevTailNode.next = node
+            node.prev = prevTailNode
+            node.next = self.tail
+            self.tail.prev = node
+            self.records[key] = node
+
+        else :
+            node = Node(value , key)
+            prevTailNode = self.tail.prev
+            prevTailNode.next = node
+            node.prev = prevTailNode
+            node.next = self.tail
+            self.tail.prev = node
+            self.records[key] = node
+
         
-        else : 
-
-            if len(self.hashmap) == self.size : 
-
-                overflow_node = self.head.next
-                overflow_node_next = overflow_node.next
-                overflow_node_next.prev = self.head
-                self.head.next = overflow_node_next
-
-                #clean up : 
-                overflow_node.next = None
-                overflow_node.prev = None
-                
-                new_node = Node(key , value)
-                last_node = self.tail.prev
-                last_node.next = new_node
-                new_node.prev = last_node
-                self.tail.prev = new_node
-                new_node.next = self.tail
-
-
-                del self.hashmap[overflow_node.key]
-                self.hashmap[key] = new_node
-            
-            else : 
-                
-                new_node = Node(key , value)
-                
-                last_node = self.tail.prev
-                last_node.next = new_node
-                new_node.prev = last_node
-                self.tail.prev = new_node
-                new_node.next = self.tail
-
-
-                self.hashmap[key] = new_node
-                
-
-
-class Node : 
-    def __init__(self , key  : int = None , value : int = None , prev = None, next = None) -> None : 
-        self.key = key
-        self.val = value
-        self.prev = prev
-        self.next = next
 
 
 # Your LRUCache object will be instantiated and called as such:
