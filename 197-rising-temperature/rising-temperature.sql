@@ -1,13 +1,20 @@
 # Write your MySQL query statement below
-with last_day_temp as (
-    select id , recordDate , temperature , lag(temperature) over(order by recordDate) as last_temp , lag(recordDate) over(order by recordDate) as last_date from weather
+with last_date_and_temperature as (
+    select id , recordDate , temperature , lag(temperature) over(order by recordDate) as last_day_temperature , lag(recordDate) over(order by recordDate) as last_day_date from weather
 )
-select id from last_day_temp where last_temp is not null and last_temp < temperature and datediff(recordDate , last_date) = 1;
+select id from last_date_and_temperature where datediff(recordDate , last_day_date) = 1 and last_day_temperature < temperature;
+
+
+
 
 -- window = Window.orderBy(col("recordDate"))
--- result = (weather.withColumn("last_day_temp" , lag(col("temperature")).over(window))
---                 .withColumn("last_day_date" , lag(col("recordDate")).over(window))
---                 .withColumn("datediff" , datediff(col("recordDate") , col("last_day_date")))
---             .filter((col("last_day_temp") < col("temperature")) & (col("datediff") == 1))
---             .select(col("id"))
+-- result = (weather.withColumn("previous_day_temp" , lag(col("temperature")).over(window))
+--                 .withColumn("previous_day_date" , lag(col("recordDate")).over(window))
+--                 .filter(
+--                     (col("previous_day_temp") < col("temperature")) & 
+--                     (datediff(col("recordDate") , col("previous_day_date")) == 1)
+--                 )
+--                 .select(
+--                     col("id")
+--                 )
 -- )
